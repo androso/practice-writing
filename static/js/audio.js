@@ -1,25 +1,16 @@
 class AudioManager {
     constructor() {
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        this.gainNode = this.audioContext.createGain();
-        this.gainNode.connect(this.audioContext.destination);
-        this.lofiTrack = null;
+        this.backgroundMusic = new Audio('/static/bg-music.mp3');
+        this.backgroundMusic.loop = true;
         this.isPlaying = false;
         this.volume = 0.5;
+        this.backgroundMusic.volume = this.volume;
     }
 
     async initializeLofiMusic() {
         try {
-            // Using the local bg-music.mp3 file
-            const response = await fetch('/static/bg-music.mp3');
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-
-            this.lofiTrack = this.audioContext.createBufferSource();
-            this.lofiTrack.buffer = audioBuffer;
-            this.lofiTrack.loop = true;
-            this.lofiTrack.connect(this.gainNode);
-
+            // Preload the audio
+            await this.backgroundMusic.load();
             console.log('Background music initialized successfully');
         } catch (error) {
             console.error('Error loading background music:', error);
@@ -27,23 +18,29 @@ class AudioManager {
     }
 
     async toggleMusic() {
-        if (this.audioContext.state === 'suspended') {
-            await this.audioContext.resume();
-        }
-
-        if (!this.isPlaying && this.lofiTrack) {
-            this.lofiTrack.start();
-            this.isPlaying = true;
-        } else if (this.isPlaying) {
-            this.lofiTrack?.stop();
-            this.isPlaying = false;
-            await this.initializeLofiMusic(); // Prepare new track
+        try {
+            if (!this.isPlaying) {
+                await this.backgroundMusic.play();
+                this.isPlaying = true;
+            } else {
+                this.backgroundMusic.pause();
+                this.backgroundMusic.currentTime = 0;
+                this.isPlaying = false;
+            }
+        } catch (error) {
+            console.error('Error toggling music:', error);
+            const feedback = document.getElementById('feedback');
+            if (feedback) {
+                feedback.textContent = 'Error: No se pudo reproducir la música';
+                feedback.classList.remove('d-none');
+                feedback.classList.add('alert-danger');
+            }
         }
     }
 
     setVolume(value) {
         this.volume = value / 100;
-        this.gainNode.gain.value = this.volume;
+        this.backgroundMusic.volume = this.volume;
     }
 
     async playPronunciation(text) {
@@ -67,7 +64,6 @@ class AudioManager {
             }
         } catch (error) {
             console.error('Error with pronunciation:', error);
-            // Show user-friendly error message
             const feedback = document.getElementById('feedback');
             if (feedback) {
                 feedback.textContent = 'Error: No se pudo reproducir la pronunciación';
