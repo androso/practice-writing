@@ -10,8 +10,8 @@ class AudioManager {
 
     async initializeLofiMusic() {
         try {
-            // Using a Creative Commons licensed lofi track
-            const response = await fetch('https://cdn.pixabay.com/download/audio/2022/02/22/audio_d0c6ff1bab.mp3');
+            // Using the local bg-music.mp3 file
+            const response = await fetch('/static/bg-music.mp3');
             const arrayBuffer = await response.arrayBuffer();
             const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
@@ -20,24 +20,9 @@ class AudioManager {
             this.lofiTrack.loop = true;
             this.lofiTrack.connect(this.gainNode);
 
-            console.log('Lofi music initialized successfully');
+            console.log('Background music initialized successfully');
         } catch (error) {
-            console.error('Error loading lofi music:', error);
-            // Try alternative track if first one fails
-            try {
-                const altResponse = await fetch('https://cdn.pixabay.com/download/audio/2022/03/10/audio_2dde668d05.mp3');
-                const altArrayBuffer = await altResponse.arrayBuffer();
-                const altAudioBuffer = await this.audioContext.decodeAudioData(altArrayBuffer);
-
-                this.lofiTrack = this.audioContext.createBufferSource();
-                this.lofiTrack.buffer = altAudioBuffer;
-                this.lofiTrack.loop = true;
-                this.lofiTrack.connect(this.gainNode);
-
-                console.log('Alternative lofi music initialized successfully');
-            } catch (altError) {
-                console.error('Error loading alternative lofi music:', altError);
-            }
+            console.error('Error loading background music:', error);
         }
     }
 

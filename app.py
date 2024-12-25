@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
@@ -15,18 +15,22 @@ VOICE_ID = "EXAVITQu4vr4xnSDxMaL"  # Spanish voice ID
 def index():
     return render_template('index.html')
 
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
+
 @app.route('/synthesize', methods=['POST'])
 def synthesize_speech():
     text = request.json.get('text', '')
-    
+
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
-    
+
     headers = {
         "Accept": "audio/mpeg",
         "Content-Type": "application/json",
         "xi-api-key": ELEVEN_LABS_API_KEY
     }
-    
+
     data = {
         "text": text,
         "model_id": "eleven_multilingual_v1",
@@ -35,7 +39,7 @@ def synthesize_speech():
             "similarity_boost": 0.5
         }
     }
-    
+
     try:
         response = requests.post(url, json=data, headers=headers)
         if response.status_code == 200:
