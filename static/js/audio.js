@@ -10,31 +10,49 @@ class AudioManager {
 
     async initializeLofiMusic() {
         try {
-            const response = await fetch('https://dl.dropboxusercontent.com/s/e93f5kxsmtqiw6q/lofi-study-112191.mp3');
+            // Using a Creative Commons licensed lofi track
+            const response = await fetch('https://cdn.pixabay.com/download/audio/2022/02/22/audio_d0c6ff1bab.mp3');
             const arrayBuffer = await response.arrayBuffer();
             const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-            
+
             this.lofiTrack = this.audioContext.createBufferSource();
             this.lofiTrack.buffer = audioBuffer;
             this.lofiTrack.loop = true;
             this.lofiTrack.connect(this.gainNode);
+
+            console.log('Lofi music initialized successfully');
         } catch (error) {
             console.error('Error loading lofi music:', error);
+            // Try alternative track if first one fails
+            try {
+                const altResponse = await fetch('https://cdn.pixabay.com/download/audio/2022/03/10/audio_2dde668d05.mp3');
+                const altArrayBuffer = await altResponse.arrayBuffer();
+                const altAudioBuffer = await this.audioContext.decodeAudioData(altArrayBuffer);
+
+                this.lofiTrack = this.audioContext.createBufferSource();
+                this.lofiTrack.buffer = altAudioBuffer;
+                this.lofiTrack.loop = true;
+                this.lofiTrack.connect(this.gainNode);
+
+                console.log('Alternative lofi music initialized successfully');
+            } catch (altError) {
+                console.error('Error loading alternative lofi music:', altError);
+            }
         }
     }
 
-    toggleMusic() {
+    async toggleMusic() {
         if (this.audioContext.state === 'suspended') {
-            this.audioContext.resume();
+            await this.audioContext.resume();
         }
 
-        if (!this.isPlaying) {
-            this.lofiTrack?.start();
+        if (!this.isPlaying && this.lofiTrack) {
+            this.lofiTrack.start();
             this.isPlaying = true;
-        } else {
+        } else if (this.isPlaying) {
             this.lofiTrack?.stop();
             this.isPlaying = false;
-            this.initializeLofiMusic(); // Prepare new track
+            await this.initializeLofiMusic(); // Prepare new track
         }
     }
 
@@ -57,12 +75,20 @@ class AudioManager {
                 const blob = await response.blob();
                 const audioUrl = URL.createObjectURL(blob);
                 const audio = new Audio(audioUrl);
-                audio.play();
+                await audio.play();
             } else {
-                console.error('Error playing pronunciation');
+                console.error('Error playing pronunciation: Server returned', response.status);
+                throw new Error('Failed to play pronunciation');
             }
         } catch (error) {
             console.error('Error with pronunciation:', error);
+            // Show user-friendly error message
+            const feedback = document.getElementById('feedback');
+            if (feedback) {
+                feedback.textContent = 'Error: No se pudo reproducir la pronunciación';
+                feedback.classList.remove('d-none');
+                feedback.classList.add('alert-danger');
+            }
         }
     }
 }
