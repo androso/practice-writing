@@ -1,0 +1,41 @@
+body {
+    min-height: 100vh;
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+}
+
+.card {
+    background-color: var(--bs-dark);
+    border-color: var(--bs-secondary);
+}
+
+.form-control {
+    background-color: var(--bs-dark);
+    border-color: var(--bs-secondary);
+    color: var(--bs-light);
+}
+
+.form-control:focus {
+    background-color: var(--bs-dark);
+    border-color: var(--bs-primary);
+    color: var(--bs-light);
+}
+
+.audio-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#volumeControl {
+    cursor: pointer;
+}
+
+.feedback-correct {
+    color: var(--bs-success);
+}
+
+.feedback-incorrect {
+    color: var(--bs-danger);
+}
