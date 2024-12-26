@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     await audioManager.initializeLofiMusic();
 
     let currentAnimalIndex = 0;
-    const currentAnimalElement = document.getElementById('currentAnimal');
+    const animalImage = document.getElementById('animalImage');
+    const revealLetters = document.getElementById('revealLetters');
+    const letterBoxes = document.getElementById('letterBoxes');
     const userInput = document.getElementById('userInput');
     const checkButton = document.getElementById('checkButton');
     const feedback = document.getElementById('feedback');
@@ -12,7 +14,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const volumeControl = document.getElementById('volumeControl');
 
     function displayCurrentAnimal() {
-        currentAnimalElement.textContent = animals[currentAnimalIndex].spanish;
+        const currentAnimal = animals[currentAnimalIndex];
+        animalImage.src = currentAnimal.image;
+        animalImage.alt = currentAnimal.english;
+        letterBoxes.innerHTML = '';
+        revealLetters.textContent = 'Revelar Letras';
+    }
+
+    function revealAnimalLetters() {
+        const currentAnimal = animals[currentAnimalIndex].spanish;
+        letterBoxes.innerHTML = currentAnimal
+            .split('')
+            .map(letter => `<span class="badge bg-secondary mx-1">${letter}</span>`)
+            .join('');
+        revealLetters.textContent = 'Letras Reveladas';
     }
 
     function checkAnswer() {
@@ -20,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const correctAnswer = animals[currentAnimalIndex].spanish.toLowerCase();
 
         feedback.classList.remove('d-none', 'alert-success', 'alert-danger');
-        
+
         if (userAnswer === correctAnswer) {
             feedback.textContent = '¡Correcto! 🎉';
             feedback.classList.add('alert-success');
@@ -36,12 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Event Listeners
     checkButton.addEventListener('click', checkAnswer);
-    
+
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             checkAnswer();
         }
     });
+
+    revealLetters.addEventListener('click', revealAnimalLetters);
 
     pronounceButton.addEventListener('click', () => {
         audioManager.playPronunciation(animals[currentAnimalIndex].spanish);
