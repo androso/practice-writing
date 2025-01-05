@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (userAnswer === correctAnswer) {
             feedback.textContent = '¡Correcto! 🎉';
             feedback.classList.add('alert-success');
+            // Play congratulatory message
+            audioManager.playPronunciation('¡felicidades!');
             currentAnimalIndex = (currentAnimalIndex + 1) % animals.length;
             userInput.value = '';
             setTimeout(displayCurrentAnimal, 1000);
