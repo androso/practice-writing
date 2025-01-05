@@ -1,19 +1,57 @@
 import os
 import logging
-from flask import Flask, render_template, jsonify, request, send_from_directory
+from flask import Flask, render_template, jsonify, request, send_from_directory, redirect, url_for, session, flash
+from flask_sqlalchemy import SQLAlchemy
 import requests
 
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    
+    def __repr__(self):
+        return f'<User {self.username}>'
+
+with app.app_context():
+    db.create_all()
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        user = User.query.filter_by(username=username).first()
+        
+        if not user:
+            user = User(username=username)
+            db.session.add(user)
+            db.session.commit()
+        
+        session['user_id'] = user.id
+        session['username'] = user.username
+        return redirect(url_for('index'))
+        
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 ELEVEN_LABS_API_KEY = os.environ.get("ELEVEN_LABS_API_KEY", "your_api_key")
 VOICE_ID = "EXAVITQu4vr4xnSDxMaL"  # Spanish voice ID
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('index.html', username=session.get('username'))
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):

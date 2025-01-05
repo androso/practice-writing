@@ -11,6 +11,10 @@
 <body>
     <div class="container py-4">
         <header class="text-center mb-5">
+            <div class="d-flex justify-content-end mb-3">
+                <span class="me-3">Welcome, {{ username }}!</span>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
+            </div>
             <h1>Práctica de Escritura de Animales</h1>
             <div class="audio-controls mt-3">
                 <button id="toggleMusic" class="btn btn-outline-secondary">
