@@ -8,22 +8,14 @@ from statistics import mean
 
 logging.basicConfig(level=logging.DEBUG)
 
-# create the app
 app = Flask(__name__)
-# setup a secret key, required by sessions
-app.secret_key = os.environ.get("FLASK_SECRET_KEY") or "a secret key"
-# configure the database, relative to the app instance folder
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
 
 class UserProgress(db.Model):
-    __tablename__ = 'user_progress'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     animal_name = db.Column(db.String(80), nullable=False)
     response_time = db.Column(db.Float, nullable=False)  # in seconds
     is_correct = db.Column(db.Boolean, nullable=False)
@@ -33,10 +25,9 @@ class UserProgress(db.Model):
         return f'<UserProgress {self.animal_name}>'
 
 class User(db.Model):
-    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    progress = db.relationship('UserProgress', backref='user', lazy=True, cascade='all, delete-orphan')
+    progress = db.relationship('UserProgress', backref='user', lazy=True)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -105,16 +96,16 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         user = User.query.filter_by(username=username).first()
-
+        
         if not user:
             user = User(username=username)
             db.session.add(user)
             db.session.commit()
-
+        
         session['user_id'] = user.id
         session['username'] = user.username
         return redirect(url_for('index'))
-
+        
     return render_template('login.html')
 
 @app.route('/logout')

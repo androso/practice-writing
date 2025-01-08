@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function updateProgress(animal, responseTime, isCorrect) {
-        console.log(`Response Time for ${animal}: ${responseTime}s, Correct: ${isCorrect}`);
         try {
             const response = await fetch('/update_progress', {
                 method: 'POST',
@@ -85,11 +84,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function checkAnswer() {
-        const submitTime = Date.now();
         const userAnswer = userInput.value.trim().toLowerCase();
         const currentAnimal = orderedAnimals[currentAnimalIndex];
         const correctAnswer = currentAnimal.spanish.toLowerCase();
-        const responseTime = (submitTime - inputFocusTime) / 1000; // Convert to seconds
+        const responseTime = (Date.now() - inputFocusTime) / 1000; // Convert to seconds
 
         feedback.classList.remove('d-none', 'alert-success', 'alert-danger');
 
