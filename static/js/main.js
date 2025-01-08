@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function updateProgress(animal, responseTime, isCorrect) {
+        console.log(`Response Time for ${animal}: ${responseTime}s, Correct: ${isCorrect}`);
         try {
             const response = await fetch('/update_progress', {
                 method: 'POST',
