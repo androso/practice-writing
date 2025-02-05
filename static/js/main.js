@@ -21,13 +21,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         revealLetters.textContent = 'Revelar Letras';
     }
 
+    let revealedCount = 0;
+    
     function revealAnimalLetters() {
         const currentAnimal = animals[currentAnimalIndex].spanish;
-        letterBoxes.innerHTML = currentAnimal
-            .split('')
-            .map(letter => `<span class="badge bg-secondary mx-1">${letter}</span>`)
-            .join('');
-        revealLetters.textContent = 'Letras Reveladas';
+        if (revealedCount >= currentAnimal.length) {
+            return;
+        }
+        
+        const letters = currentAnimal.split('').map((letter, index) => {
+            if (index <= revealedCount) {
+                return `<span class="badge bg-secondary mx-1">${letter}</span>`;
+            }
+            return `<span class="badge bg-secondary mx-1">?</span>`;
+        });
+        
+        letterBoxes.innerHTML = letters.join('');
+        revealedCount++;
+        
+        if (revealedCount >= currentAnimal.length) {
+            revealLetters.textContent = 'Todas las Letras Reveladas';
+        }
+    }
+    
+    function displayCurrentAnimal() {
+        const currentAnimal = animals[currentAnimalIndex];
+        animalImage.src = currentAnimal.image;
+        animalImage.alt = currentAnimal.english;
+        letterBoxes.innerHTML = '';
+        revealLetters.textContent = 'Revelar Letra';
+        revealedCount = 0;
     }
 
     function checkAnswer() {
