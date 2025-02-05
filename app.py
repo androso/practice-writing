@@ -3,8 +3,6 @@ import logging
 from flask import Flask, render_template, jsonify, request, send_from_directory, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import requests
-from datetime import datetime
-from statistics import mean
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -13,83 +11,15 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
 
-class UserProgress(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    animal_name = db.Column(db.String(80), nullable=False)
-    response_time = db.Column(db.Float, nullable=False)  # in seconds
-    is_correct = db.Column(db.Boolean, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f'<UserProgress {self.animal_name}>'
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    progress = db.relationship('UserProgress', backref='user', lazy=True)
-
+    
     def __repr__(self):
         return f'<User {self.username}>'
 
-    def get_animal_order(self):
-        # Get average response times for each animal
-        progress_data = {}
-        for entry in self.progress:
-            if entry.animal_name not in progress_data:
-                progress_data[entry.animal_name] = []
-            progress_data[entry.animal_name].append(entry.response_time)
-
-        # Calculate average response time for each animal
-        avg_times = {
-            animal: mean(times) if times else 0 
-            for animal, times in progress_data.items()
-        }
-
-        # Sort animals by response time (descending)
-        return sorted(avg_times.keys(), key=lambda x: avg_times.get(x, 0), reverse=True)
-
 with app.app_context():
     db.create_all()
-
-@app.route('/update_progress', methods=['POST'])
-def update_progress():
-    if 'user_id' not in session:
-        return jsonify({"error": "Not logged in"}), 401
-
-    data = request.json
-    animal_name = data.get('animal')
-    response_time = data.get('responseTime')
-    is_correct = data.get('isCorrect')
-
-    if not all([animal_name, response_time is not None, is_correct is not None]):
-        return jsonify({"error": "Missing data"}), 400
-
-    progress = UserProgress(
-        user_id=session['user_id'],
-        animal_name=animal_name,
-        response_time=response_time,
-        is_correct=is_correct
-    )
-
-    db.session.add(progress)
-    db.session.commit()
-
-    # Get updated animal order
-    user = User.query.get(session['user_id'])
-    animal_order = user.get_animal_order()
-
-    return jsonify({"success": True, "animalOrder": animal_order})
-
-@app.route('/get_animal_order')
-def get_animal_order():
-    if 'user_id' not in session:
-        return jsonify({"error": "Not logged in"}), 401
-
-    user = User.query.get(session['user_id'])
-    animal_order = user.get_animal_order()
-
-    return jsonify({"animalOrder": animal_order})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
