@@ -109,7 +109,7 @@ const Game = () => {
       </Button>
 
       <div className="text-center">
-        <div className="text-sm text-gray-600 mb-2">
+        <div className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
           Card {currentAnimalIndex + 1} of {currentChapter.words.length}
         </div>
         <img
