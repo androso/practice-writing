@@ -1,4 +1,3 @@
-
 import os
 import logging
 from flask import Flask, render_template, jsonify, request, send_from_directory, redirect, url_for, session, flash
@@ -7,7 +6,7 @@ import requests
 
 logging.basicConfig(level=logging.DEBUG)
 
-app = Flask(__name__, static_folder='dist', template_folder='dist')
+app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
@@ -22,7 +21,7 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-@app.route('/api/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -39,16 +38,26 @@ def login():
         
     return render_template('login.html')
 
-@app.route('/api/logout')
+@app.route('/logout')
 def logout():
     session.pop('user_id', None)
     session.pop('username', None)
     return redirect(url_for('login'))
 
 ELEVEN_LABS_API_KEY = os.environ.get("ELEVEN_LABS_API_KEY", "your_api_key")
-VOICE_ID = "EXAVITQu4vr4xnSDxMaL"
+VOICE_ID = "EXAVITQu4vr4xnSDxMaL"  # Spanish voice ID
 
-@app.route('/api/synthesize', methods=['POST'])
+@app.route('/')
+def index():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('index.html', username=session.get('username'))
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
+
+@app.route('/synthesize', methods=['POST'])
 def synthesize_speech():
     text = request.json.get('text', '')
 
@@ -78,13 +87,6 @@ def synthesize_speech():
     except Exception as e:
         logging.error(f"Error synthesizing speech: {e}")
         return jsonify({"error": str(e)}), 500
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
-    if path and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
