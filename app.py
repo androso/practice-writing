@@ -4,38 +4,50 @@ from flask import Flask, render_template, jsonify, request, send_from_directory,
 from flask_sqlalchemy import SQLAlchemy
 import requests
 
+# Set up logging
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+
+# Add debug logging for configuration
+logger.debug(f"Database URL configured: {bool(app.config['SQLALCHEMY_DATABASE_URI'])}")
+
 db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    
+
     def __repr__(self):
         return f'<User {self.username}>'
 
-with app.app_context():
-    db.create_all()
+# Test route for basic connectivity check
+@app.route('/ping')
+def ping():
+    return jsonify({"status": "ok"})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         user = User.query.filter_by(username=username).first()
-        
+
         if not user:
             user = User(username=username)
             db.session.add(user)
             db.session.commit()
-        
+
         session['user_id'] = user.id
         session['username'] = user.username
         return redirect(url_for('index'))
-        
+
     return render_template('login.html')
 
 @app.route('/logout')
@@ -60,7 +72,6 @@ def serve_static(filename):
 @app.route('/synthesize', methods=['POST'])
 def synthesize_speech():
     text = request.json.get('text', '')
-
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
 
     headers = {
@@ -85,8 +96,16 @@ def synthesize_speech():
         else:
             return jsonify({"error": "Speech synthesis failed"}), 500
     except Exception as e:
-        logging.error(f"Error synthesizing speech: {e}")
+        logger.error(f"Error synthesizing speech: {e}")
         return jsonify({"error": str(e)}), 500
+
+# Create all database tables
+with app.app_context():
+    try:
+        db.create_all()
+        logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.error(f"Error creating database tables: {e}")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
