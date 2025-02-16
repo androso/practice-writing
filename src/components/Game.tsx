@@ -109,6 +109,9 @@ const Game = () => {
       </Button>
 
       <div className="text-center">
+        <div className="text-sm text-gray-600 mb-2">
+          Card {currentAnimalIndex + 1} of {currentChapter.words.length}
+        </div>
         <img
           src={currentAnimal.image}
           alt={currentAnimal.english}
