@@ -20,23 +20,23 @@ const chapters = {
         words: [
             { spanish: "Gato", english: "Cat", image: "/static/gato.webp" },
             { spanish: "Perro", english: "Dog", image: "/static/perro.jpg" },
-            { spanish: "Pato", english: "Duck", image: "/static/delfin.jpg" },
+            { spanish: "Pato", english: "Duck", image: "/static/pato.jpg" },
             { spanish: "Oso", english: "Bear", image: "/static/oso.jpg" },
             { spanish: "Pez", english: "Fish", image: "/static/pez.jpg" },
             { spanish: "Vaca", english: "Cow", image: "/static/vaca.webp" },
-            { spanish: "Comer", english: "To eat", image: "/static/gato.webp" },
-            { spanish: "Correr", english: "To run", image: "/static/caballo.jpg" },
-            { spanish: "Saltar", english: "To jump", image: "/static/conejo.webp" },
-            { spanish: "Cantar", english: "To sing", image: "/static/loro.jpg" },
-            { spanish: "Casa", english: "House", image: "/static/serpiente.bmp" },
-            { spanish: "Lago", english: "Lake", image: "/static/pez.jpg" },
-            { spanish: "Selva", english: "Jungle", image: "/static/mono.jpg" },
-            { spanish: "Niña", english: "Girl", image: "/static/mariposa.jpg" },
-            { spanish: "Feliz", english: "Happy", image: "/static/gato.webp" },
-            { spanish: "Niño", english: "Boy", image: "/static/caballo.jpg" },
-            { spanish: "Árbol", english: "Tree", image: "/static/mono.jpg" },
-            { spanish: "Jugar", english: "To play", image: "/static/perro.jpg" },
-            { spanish: "Rojo", english: "Red", image: "/static/toro.jpg" }
+            { spanish: "Comer", english: "To eat", image: "/static/comer.jpg" },
+            { spanish: "Correr", english: "To run", image: "/static/correr.webp" },
+            { spanish: "Saltar", english: "To jump", image: "/static/saltar.webp" },
+            { spanish: "Cantar", english: "To sing", image: "/static/cantar.jpg" },
+            { spanish: "Casa", english: "House", image: "/static/casa.png" },
+            { spanish: "Lago", english: "Lake", image: "/static/lago.jpg" },
+            { spanish: "Selva", english: "Jungle", image: "/static/selva.jpg" },
+            { spanish: "Niña", english: "Girl", image: "/static/nina.webp" },
+            { spanish: "Feliz", english: "Happy", image: "/static/feliz.jpg" },
+            { spanish: "Niño", english: "Boy", image: "/static/nino.webp" },
+            { spanish: "Árbol", english: "Tree", image: "/static/arbol.png" },
+            { spanish: "Jugar", english: "To play", image: "/static/jugar.jpg" },
+            { spanish: "Rojo", english: "Red", image: "/static/rojo.jpg" }
         ]
     }
 };
