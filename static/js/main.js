@@ -119,14 +119,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         audioManager.playPronunciation(currentChapter.words[currentAnimalIndex].spanish);
     });
 
-    toggleMusicButton.addEventListener('click', () => {
-        audioManager.toggleMusic();
-    });
-
-    volumeControl.addEventListener('input', (e) => {
-        audioManager.setVolume(e.target.value);
-    });
-
     // Initialize
     displayChapters();
 });
