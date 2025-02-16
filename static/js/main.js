@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function displayChapters() {
         backButton.classList.add('d-none');
         gameContent.classList.add('d-none');
+        chapterSelect.classList.remove('d-none');
         chapterSelect.innerHTML = '';
         
         Object.entries(chapters).forEach(([key, chapter]) => {
