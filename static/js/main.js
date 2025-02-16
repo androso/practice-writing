@@ -13,39 +13,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const toggleMusicButton = document.getElementById('toggleMusic');
     const volumeControl = document.getElementById('volumeControl');
 
-    function displayCurrentAnimal() {
-        const currentAnimal = animals[currentAnimalIndex];
-        animalImage.src = currentAnimal.image;
-        animalImage.alt = currentAnimal.english;
-        letterBoxes.innerHTML = '';
-        revealLetters.textContent = 'Revelar Letras';
-    }
+    let currentChapter = animals.capitulo1; // Assuming 'animals' object now contains chapters
 
-    let revealedCount = 0;
-    
-    function revealAnimalLetters() {
-        const currentAnimal = animals[currentAnimalIndex].spanish;
-        if (revealedCount >= currentAnimal.length) {
-            return;
-        }
-        
-        const letters = currentAnimal.split('').map((letter, index) => {
-            if (index <= revealedCount) {
-                return `<span class="badge bg-secondary mx-1">${letter}</span>`;
-            }
-            return `<span class="badge bg-secondary mx-1">?</span>`;
-        });
-        
-        letterBoxes.innerHTML = letters.join('');
-        revealedCount++;
-        
-        if (revealedCount >= currentAnimal.length) {
-            revealLetters.textContent = 'Todas las Letras Reveladas';
-        }
-    }
-    
+
     function displayCurrentAnimal() {
-        const currentAnimal = animals[currentAnimalIndex];
+        const currentAnimal = currentChapter.words[currentAnimalIndex];
         animalImage.src = currentAnimal.image;
         animalImage.alt = currentAnimal.english;
         letterBoxes.innerHTML = '';
@@ -53,9 +25,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         revealedCount = 0;
     }
 
+    let revealedCount = 0;
+
+    function revealAnimalLetters() {
+        const currentAnimal = currentChapter.words[currentAnimalIndex].spanish;
+        if (revealedCount >= currentAnimal.length) {
+            return;
+        }
+
+        const letters = currentAnimal.split('').map((letter, index) => {
+            if (index <= revealedCount) {
+                return `<span class="badge bg-secondary mx-1">${letter}</span>`;
+            }
+            return `<span class="badge bg-secondary mx-1">?</span>`;
+        });
+
+        letterBoxes.innerHTML = letters.join('');
+        revealedCount++;
+
+        if (revealedCount >= currentAnimal.length) {
+            revealLetters.textContent = 'Todas las Letras Reveladas';
+        }
+    }
+
+
     function checkAnswer() {
         const userAnswer = userInput.value.trim().toLowerCase();
-        const correctAnswer = animals[currentAnimalIndex].spanish.toLowerCase();
+        const correctAnswer = currentChapter.words[currentAnimalIndex].spanish.toLowerCase();
 
         feedback.classList.remove('d-none', 'alert-success', 'alert-danger');
 
@@ -64,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             feedback.classList.add('alert-success');
             // Play congratulatory message
             audioManager.playPronunciation('¡felicidades!');
-            currentAnimalIndex = (currentAnimalIndex + 1) % animals.length;
+            currentAnimalIndex = (currentAnimalIndex + 1) % currentChapter.words.length;
             userInput.value = '';
             setTimeout(displayCurrentAnimal, 1000);
         } else {
@@ -86,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     revealLetters.addEventListener('click', revealAnimalLetters);
 
     pronounceButton.addEventListener('click', () => {
-        audioManager.playPronunciation(animals[currentAnimalIndex].spanish);
+        audioManager.playPronunciation(currentChapter.words[currentAnimalIndex].spanish);
     });
 
     toggleMusicButton.addEventListener('click', () => {

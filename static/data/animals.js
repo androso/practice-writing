@@ -1,25 +1,19 @@
-const animals = [
-    { spanish: "Serpiente", english: "Snake", image: "/static/serpiente.bmp"}, 
-    //{ spanish: "Panda", english: "Panda", image: "/static/panda.bmp"}, 
-    //{ spanish: "Llama", english: "Llama", image: "/static/llama.bmp"}, 
-    { spanish: "Camello", english: "Camello", image: "/static/camello.bmp"}, 
-    { spanish: "esqueleto", english: "skeleton", image: "/static/esqueleto.webp" },
-    // { spanish: "enderman", english: "enderman", image: "/static/enderman.png" },
-    // { spanish: "Mariposa", english: "butterfly", image: "/static/mariposa.jpg"}, 
-    // { spanish: "Conejo", english: "rabbit", image: "/static/conejo.webp"}, 
-    // { spanish: "Elefante", english: "elephant", image: "/static/elefante.jpg"}, 
-    { spanish: "Delfin", english: "dolphin", image: "/static/delfin.jpg"}, 
-    // { spanish: "zorro", english: "fox", image: "/static/zorro.jpg"}, 
-    // { spanish: "foca", english: "seal", image: "/static/foca.jpg"}, 
-    { spanish: "pez", english: "fish", image: "/static/pez.jpg"},
-    // { spanish: "gallo", english: "rooster", image: "/static/gallo.jpg"},
-    // { spanish: "mono", english: "monkey", image: "/static/mono.jpg"},
-    { spanish: "zombie", english: "zombie", image: "/static/zombie.webp" },
-    // { spanish: "gallina", english: "chicken", image: "/static/gallina.webp" },
-    // { spanish: "vaca", english: "cow", image: "/static/vaca.webp" },
-    { spanish: "caballo", english: "horse", image: "/static/caballo.jpg" },
-    // { spanish: "toro", english: "bull", image: "/static/toro.jpg" },
-    // { spanish: "lobo", english: "wolf", image: "/static/lobo.jpg" },
-    { spanish: "loro", english: "parrot", image: "/static/loro.jpg" },
 
-];
+const chapters = {
+    capitulo1: {
+        title: "Animales Básicos",
+        thumbnail: "/static/serpiente.bmp",
+        words: [
+            { spanish: "Serpiente", english: "Snake", image: "/static/serpiente.bmp"}, 
+            { spanish: "Camello", english: "Camello", image: "/static/camello.bmp"}, 
+            { spanish: "esqueleto", english: "skeleton", image: "/static/esqueleto.webp" },
+            { spanish: "Delfin", english: "dolphin", image: "/static/delfin.jpg"}, 
+            { spanish: "pez", english: "fish", image: "/static/pez.jpg"},
+            { spanish: "zombie", english: "zombie", image: "/static/zombie.webp" },
+            { spanish: "caballo", english: "horse", image: "/static/caballo.jpg" },
+            { spanish: "loro", english: "parrot", image: "/static/loro.jpg" },
+        ]
+    }
+};
+
+const animals = chapters.capitulo1.words;

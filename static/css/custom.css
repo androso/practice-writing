@@ -59,3 +59,36 @@ body {
     background-color: var(--bs-light) !important;
     color: var(--bs-dark) !important;
 }
+
+.chapter-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.chapter-card {
+    width: 200px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 2px solid var(--bs-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.chapter-card:hover {
+    transform: scale(1.05);
+    border-color: var(--bs-primary);
+}
+
+.chapter-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.chapter-card .chapter-title {
+    padding: 0.5rem;
+    background: var(--bs-dark);
+}
