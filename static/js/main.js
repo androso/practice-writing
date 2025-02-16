@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkButton = document.getElementById('checkButton');
     const feedback = document.getElementById('feedback');
     const pronounceButton = document.getElementById('pronounceButton');
-    const toggleMusicButton = document.getElementById('toggleMusic');
-    const volumeControl = document.getElementById('volumeControl');
+    const backButton = document.getElementById('backButton');
 
     function displayChapters() {
+        backButton.classList.add('d-none');
         gameContent.classList.add('d-none');
         chapterSelect.innerHTML = '';
         
@@ -38,8 +38,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentAnimalIndex = 0;
         chapterSelect.classList.add('d-none');
         gameContent.classList.remove('d-none');
+        backButton.classList.remove('d-none');
         displayCurrentAnimal();
     }
+
+    backButton.addEventListener('click', () => {
+        gameContent.classList.add('d-none');
+        chapterSelect.classList.remove('d-none');
+        backButton.classList.add('d-none');
+        currentChapter = null;
+        currentAnimalIndex = 0;
+        displayChapters();
+    });
 
     function displayCurrentAnimal() {
         const currentAnimal = currentChapter.words[currentAnimalIndex];
