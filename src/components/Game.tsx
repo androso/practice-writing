@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 
 interface Animal {
@@ -17,7 +18,7 @@ interface Chapters {
   [key: string]: Chapter;
 }
 
-const Game = () => {
+const Game: React.FC = () => {
   const [currentAnimalIndex, setCurrentAnimalIndex] = useState(0);
   const [currentChapter, setCurrentChapter] = useState<Chapter | null>(null);
   const [revealedCount, setRevealedCount] = useState(0);
@@ -26,7 +27,6 @@ const Game = () => {
   const [chapters, setChapters] = useState<Chapters>({});
 
   useEffect(() => {
-    // Load chapters data
     const loadChapters = async () => {
       const response = await fetch('/static/data/animals.js');
       const chaptersData = await response.json();
@@ -43,7 +43,6 @@ const Game = () => {
 
     if (userAnswer === correctAnswer) {
       setFeedback({ message: '¡Correcto! 🎉', type: 'success' });
-      // Play pronunciation here
       setCurrentAnimalIndex((prev) => (prev + 1) % currentChapter.words.length);
       setUserInput('');
       setRevealedCount(0);
@@ -76,12 +75,6 @@ const Game = () => {
             className="cursor-pointer rounded-lg shadow-md hover:shadow-lg transition-shadow"
             onClick={() => selectChapter(key)}
           >
-            <p> hello </p>
-            {/* <img
-              src={chapter.thumbnail}
-              alt={chapter.title}
-              className="w-full h-48 object-cover rounded-t-lg"
-            /> */}
             <div className="p-4 text-center font-bold">{chapter.title}</div>
           </div>
         ))}
@@ -113,12 +106,6 @@ const Game = () => {
         <div className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
           Card {currentAnimalIndex + 1} of {currentChapter.words.length}
         </div>
-        <p> hello </p>
-        {/* <img
-          src={currentAnimal.image}
-          alt={currentAnimal.english}
-          className="mx-auto max-h-64 object-contain mb-4"
-        /> */}
 
         <div className="space-y-4">
           <div className="flex justify-center space-x-1">{letters}</div>
