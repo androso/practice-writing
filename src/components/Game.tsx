@@ -76,11 +76,12 @@ const Game = () => {
             className="cursor-pointer rounded-lg shadow-md hover:shadow-lg transition-shadow"
             onClick={() => selectChapter(key)}
           >
-            <img
+            <p> hello </p>
+            {/* <img
               src={chapter.thumbnail}
               alt={chapter.title}
               className="w-full h-48 object-cover rounded-t-lg"
-            />
+            /> */}
             <div className="p-4 text-center font-bold">{chapter.title}</div>
           </div>
         ))}
@@ -112,11 +113,12 @@ const Game = () => {
         <div className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
           Card {currentAnimalIndex + 1} of {currentChapter.words.length}
         </div>
-        <img
+        <p> hello </p>
+        {/* <img
           src={currentAnimal.image}
           alt={currentAnimal.english}
           className="mx-auto max-h-64 object-contain mb-4"
-        />
+        /> */}
 
         <div className="space-y-4">
           <div className="flex justify-center space-x-1">{letters}</div>
