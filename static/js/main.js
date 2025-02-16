@@ -1,8 +1,12 @@
+
 document.addEventListener('DOMContentLoaded', async () => {
     const audioManager = new AudioManager();
     await audioManager.initializeLofiMusic();
 
     let currentAnimalIndex = 0;
+    let currentChapter = null;
+    const chapterSelect = document.getElementById('chapterSelect');
+    const gameContent = document.getElementById('gameContent');
     const animalImage = document.getElementById('animalImage');
     const revealLetters = document.getElementById('revealLetters');
     const letterBoxes = document.getElementById('letterBoxes');
@@ -13,8 +17,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     const toggleMusicButton = document.getElementById('toggleMusic');
     const volumeControl = document.getElementById('volumeControl');
 
-    let currentChapter = animals.capitulo1; // Assuming 'animals' object now contains chapters
+    function displayChapters() {
+        gameContent.classList.add('d-none');
+        chapterSelect.innerHTML = '';
+        
+        Object.entries(chapters).forEach(([key, chapter]) => {
+            const chapterCard = document.createElement('div');
+            chapterCard.className = 'chapter-card';
+            chapterCard.innerHTML = `
+                <img src="${chapter.thumbnail}" alt="${chapter.title}">
+                <div class="chapter-title text-center">${chapter.title}</div>
+            `;
+            chapterCard.addEventListener('click', () => selectChapter(key));
+            chapterSelect.appendChild(chapterCard);
+        });
+    }
 
+    function selectChapter(chapterKey) {
+        currentChapter = chapters[chapterKey];
+        currentAnimalIndex = 0;
+        chapterSelect.classList.add('d-none');
+        gameContent.classList.remove('d-none');
+        displayCurrentAnimal();
+    }
 
     function displayCurrentAnimal() {
         const currentAnimal = currentChapter.words[currentAnimalIndex];
@@ -48,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-
     function checkAnswer() {
         const userAnswer = userInput.value.trim().toLowerCase();
         const correctAnswer = currentChapter.words[currentAnimalIndex].spanish.toLowerCase();
@@ -58,7 +82,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (userAnswer === correctAnswer) {
             feedback.textContent = '¡Correcto! 🎉';
             feedback.classList.add('alert-success');
-            // Play congratulatory message
             audioManager.playPronunciation('¡felicidades!');
             currentAnimalIndex = (currentAnimalIndex + 1) % currentChapter.words.length;
             userInput.value = '';
@@ -94,5 +117,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Initialize
-    displayCurrentAnimal();
+    displayChapters();
 });

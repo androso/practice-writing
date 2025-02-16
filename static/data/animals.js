@@ -15,5 +15,3 @@ const chapters = {
         ]
     }
 };
-
-const animals = chapters.capitulo1.words;
